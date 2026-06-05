@@ -1,10 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Collections.Specialized;
 
 namespace Hotel.Common
 {
-    internal class BusinessException
+    public class BusinessException : Exception
     {
+        public StringDictionary CodigoError { get; }
+        /// <param name="mensaje">Descripción del error para mostrar al usuario</param>
+        /// <param name="codigoError">Código interno que identifica el tipo de error</param>
+        public BusinessException(string mensaje, string codigoError) : base(mensaje)
+        {
+            CodigoError = new StringDictionary();
+            CodigoError.Add("Codigo", codigoError);
+        }
     }
 }
