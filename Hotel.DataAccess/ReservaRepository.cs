@@ -3,25 +3,16 @@ using System.Text.Json;
 
 namespace Hotel.DataAccess
 {
-    /// <summary>
-    /// Repositorio de reservas. Maneja lectura y escritura en archivo JSON.
-    /// </summary>
     public class ReservaRepository
     {
         private readonly string _archivo = "reservas.json";
 
-        /// <summary>
-        /// Devuelve todas las reservas activas (no canceladas).
-        /// </summary>
         public List<Reserva> ObtenerTodas()
         {
             var todas = CargarDesdeArchivo();
             return todas.Where(r => r.Estado == "Activa").ToList();
         }
 
-        /// <summary>
-        /// Inserta una nueva reserva y guarda en el archivo JSON.
-        /// </summary>
         public void Insertar(Reserva reserva)
         {
             var lista = CargarDesdeArchivo();
@@ -30,9 +21,6 @@ namespace Hotel.DataAccess
             GuardarEnArchivo(lista);
         }
 
-        /// <summary>
-        /// Actualiza una reserva existente y guarda los cambios.
-        /// </summary>
         public void Actualizar(Reserva reserva)
         {
             var lista = CargarDesdeArchivo();
@@ -49,9 +37,6 @@ namespace Hotel.DataAccess
             GuardarEnArchivo(lista);
         }
 
-        /// <summary>
-        /// Cancela una reserva (borrado lógico por estado).
-        /// </summary>
         public void Cancelar(int id)
         {
             var lista = CargarDesdeArchivo();
@@ -63,10 +48,6 @@ namespace Hotel.DataAccess
             GuardarEnArchivo(lista);
         }
 
-        /// <summary>
-        /// Devuelve todas las reservas sin filtro.
-        /// Necesario para validar disponibilidad de habitaciones.
-        /// </summary>
         public List<Reserva> ObtenerTodasSinFiltro() => CargarDesdeArchivo();
 
         // ── Métodos privados de persistencia ──────────────────────────────────

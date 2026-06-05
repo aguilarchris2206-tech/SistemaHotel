@@ -3,23 +3,14 @@ using Hotel.DataAccess;
 
 namespace Hotel.Business
 {
-    /// <summary>
-    /// Servicio de huéspedes. Contiene las validaciones y reglas de negocio.
-    /// </summary>
     public class HuespedService
     {
         private readonly HuespedRepository _repo;
 
         public HuespedService() { _repo = new HuespedRepository(); }
 
-        /// <summary>
-        /// Devuelve todos los huéspedes activos.
-        /// </summary>
         public List<Huesped> ObtenerTodos() => _repo.ObtenerTodos();
 
-        /// <summary>
-        /// Guarda un huésped aplicando validaciones de negocio.
-        /// </summary>
         public void Guardar(Huesped huesped)
         {
             // Validación 1: El nombre es obligatorio y debe tener al menos 3 caracteres
@@ -48,9 +39,6 @@ namespace Hotel.Business
             else _repo.Actualizar(huesped);
         }
 
-        /// <summary>
-        /// Elimina lógicamente un huésped por su ID.
-        /// </summary>
         public void Eliminar(int id) => _repo.Eliminar(id);
     }
 }

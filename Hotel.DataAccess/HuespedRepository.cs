@@ -3,25 +3,16 @@ using System.Text.Json;
 
 namespace Hotel.DataAccess
 {
-    /// <summary>
-    /// Repositorio de huéspedes. Maneja lectura y escritura en archivo JSON.
-    /// </summary>
     public class HuespedRepository
     {
         private readonly string _archivo = "huespedes.json";
 
-        /// <summary>
-        /// Carga todos los huéspedes activos desde el archivo JSON.
-        /// </summary>
         public List<Huesped> ObtenerTodos()
         {
             var todos = CargarDesdeArchivo();
             return todos.Where(h => h.Activo).ToList();
         }
 
-        /// <summary>
-        /// Inserta un nuevo huésped y guarda en el archivo JSON.
-        /// </summary>
         public void Insertar(Huesped huesped)
         {
             var lista = CargarDesdeArchivo();
@@ -30,9 +21,6 @@ namespace Hotel.DataAccess
             GuardarEnArchivo(lista);
         }
 
-        /// <summary>
-        /// Actualiza un huésped existente y guarda los cambios.
-        /// </summary>
         public void Actualizar(Huesped huesped)
         {
             var lista = CargarDesdeArchivo();
@@ -47,9 +35,6 @@ namespace Hotel.DataAccess
             GuardarEnArchivo(lista);
         }
 
-        /// <summary>
-        /// Borrado lógico: marca el huésped como inactivo.
-        /// </summary>
         public void Eliminar(int id)
         {
             var lista = CargarDesdeArchivo();
@@ -61,10 +46,6 @@ namespace Hotel.DataAccess
             GuardarEnArchivo(lista);
         }
 
-        /// <summary>
-        /// Devuelve todos los huéspedes sin filtro de estado activo.
-        /// Usado para validar cédulas duplicadas.
-        /// </summary>
         public List<Huesped> ObtenerTodosSinFiltro() => CargarDesdeArchivo();
 
         // ── Métodos privados de persistencia ──────────────────────────────────

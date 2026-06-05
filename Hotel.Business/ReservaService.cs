@@ -3,33 +3,19 @@ using Hotel.DataAccess;
 
 namespace Hotel.Business
 {
-    /// <summary>
-    /// Servicio de reservas. Contiene la operación de negocio principal del sistema:
-    /// calcular tarifa y validar disponibilidad de habitaciones.
-    /// </summary>
     public class ReservaService
     {
         private readonly ReservaRepository _repoReserva;
         private readonly HabitacionRepository _repoHabitacion;
 
-        /// <summary>
-        /// Constructor. Instancia los repositorios necesarios para la operación de negocio.
-        /// </summary>
         public ReservaService()
         {
             _repoReserva = new ReservaRepository();
             _repoHabitacion = new HabitacionRepository();
         }
 
-        /// <summary>
-        /// Devuelve todas las reservas activas.
-        /// </summary>
         public List<Reserva> ObtenerTodas() => _repoReserva.ObtenerTodas();
 
-        /// <summary>
-        /// Guarda una reserva. Aplica validaciones de fechas, disponibilidad
-        /// y calcula automáticamente el total a cobrar.
-        /// </summary>
         public void Guardar(Reserva reserva)
         {
             // Validación 1: Las fechas son obligatorias y deben ser coherentes
@@ -45,7 +31,6 @@ namespace Hotel.Business
                 throw new BusinessException("La fecha de entrada no puede ser en el pasado.", "RES_FECHA_PASADO");
 
             // Validación 4: Verificar disponibilidad — la habitación no debe tener reservas
-            // activas que se crucen con el rango de fechas solicitado
             var reservasActivas = _repoReserva.ObtenerTodasSinFiltro()
                 .Where(r => r.HabitacionId == reserva.HabitacionId
                          && r.Estado == "Activa"
@@ -71,9 +56,6 @@ namespace Hotel.Business
             else _repoReserva.Actualizar(reserva);
         }
 
-        /// <summary>
-        /// Cancela una reserva por su ID (borrado lógico por estado).
-        /// </summary>
         public void Cancelar(int id) => _repoReserva.Cancelar(id);
     }
 }

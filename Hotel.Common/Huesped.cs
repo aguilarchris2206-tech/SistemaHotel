@@ -4,17 +4,13 @@ using System.Text;
 
 namespace Hotel.Common
 {
-    /// <summary>
-    /// Representa un huésped registrado en el hotel.
-    /// Entidad principal del sistema.
-    /// </summary>
     public class Huesped
     {
         public int Id { get; set; }
 
         public string Nombre { get; set; } = "";
 
-        // Cédula de identidad — debe ser única por huésped
+        // Cédula de identidad - debe ser única por huésped
         public string Cedula { get; set; } = "";
 
         public string Telefono { get; set; } = "";
