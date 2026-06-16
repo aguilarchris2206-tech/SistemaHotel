@@ -1,44 +1,46 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
 using Hotel.Common;
 using Hotel.DataAccess;
-
-
 
 namespace Hotel.Business
 {
     public class HabitacionService
     {
-        private readonly HabitacionRepository _repo;
+        private readonly HabitacionRepository _repo; // Variable privada de solo lectura, de tipo HabitacionRepository
 
-        public HabitacionService() { _repo = new HabitacionRepository(); }
+        public HabitacionService() { _repo = new HabitacionRepository(); } // Constructor
+        public List<Habitacion> ObtenerTodas() => _repo.ObtenerTodas(); // Lectura
 
-        public List<Habitacion> ObtenerTodas() => _repo.ObtenerTodas();
-
-        public void Guardar(Habitacion habitacion)
+        public void Guardar(Habitacion habitacion) // Insercion y Actualizacion
         {
-            // Validación 1: El número de habitación es obligatorio
+            // Validaciones
+
+            // 1. Si el numero de habitacion esta en blanco
             if (string.IsNullOrWhiteSpace(habitacion.Numero))
-                throw new BusinessException("El número de habitación es requerido.", "HAB_NUMERO_REQ");
+                throw new BusinessException("El numero de habitacion es requerido", "HAB_NUMERO_REQ");
 
-            // Validación 2: El tipo de habitación es obligatorio
+            // 2. Si el tipo de habitacion esta en blanco
             if (string.IsNullOrWhiteSpace(habitacion.Tipo))
-                throw new BusinessException("El tipo de habitación es requerido.", "HAB_TIPO_REQ");
+                throw new BusinessException("El tipo de habitacion es requerido", "HAB_TIPO_REQ");
 
-            // Validación 3: La tarifa por noche debe ser mayor a cero
+            // 3. Si la tarifa por noche es menor o igual a cero
             if (habitacion.TarifaNoche <= 0)
-                throw new BusinessException("La tarifa por noche debe ser mayor a cero.", "HAB_TARIFA_INV");
+                throw new BusinessException("La tarifa por noche debe ser mayor a cero", "HAB_TARIFA_INV");
 
-            // Validación 4: No puede existir otra habitación activa con el mismo número
-            var duplicado = _repo.ObtenerTodosSinFiltro()
+            // 4. Si ya existe una habitacion activa con el mismo numero
+            var duplicado = _repo.ObtenerTodasSinFiltro()
                 .FirstOrDefault(h => h.Numero == habitacion.Numero && h.Activa && h.Id != habitacion.Id);
 
             if (duplicado != null)
-                throw new BusinessException($"Ya existe una habitación con el número {habitacion.Numero}.", "HAB_NUMERO_DUP");
+                throw new BusinessException($"Ya existe una habitacion con el numero {habitacion.Numero}", "HAB_NUMERO_DUP");
 
-            // Si Id == 0 es una habitación nueva; si no, es una actualización
+            // Si Id == 0 es una habitacion nueva; si no, es una actualizacion
             if (habitacion.Id == 0) _repo.Insertar(habitacion);
             else _repo.Actualizar(habitacion);
         }
 
-        public void Eliminar(int id) => _repo.Eliminar(id);
+        public void Eliminar(int id) => _repo.Eliminar(id); // Eliminacion
     }
 }

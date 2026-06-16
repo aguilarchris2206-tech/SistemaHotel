@@ -1,75 +1,53 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
 using Hotel.Common;
-using System.Text.Json;
-
 
 namespace Hotel.DataAccess
 {
     public class HabitacionRepository
     {
-        private readonly string _archivo = "habitaciones.json";
-
-        // Contador para el siguiente ID disponible
-        private static int _nextId = 1;
-
-        public List<Habitacion> ObtenerTodas()
+        // Creamos una lista estatica de habitaciones (los datos viven en memoria mientras la app esta abierta)
+        private static readonly List<Habitacion> _datos = new()
         {
-            var todas = CargarDesdeArchivo();
-            return todas.Where(h => h.Activa).ToList(); // Solo devolvemos las activas
-        }
+            new Habitacion { Id = 1, Numero = "101", Tipo = "Simple",  TarifaNoche = 35000 },
+            new Habitacion { Id = 2, Numero = "102", Tipo = "Doble",   TarifaNoche = 55000 },
+            new Habitacion { Id = 3, Numero = "201", Tipo = "Suite",   TarifaNoche = 95000 },
+        };
 
-        public void Insertar(Habitacion habitacion)
+        public static int _nextId = 4; // Siguiente identificador en la lista
+
+        // CRUD
+
+        // Metodo para obtener todas las habitaciones activas del repositorio
+        public List<Habitacion> ObtenerTodas() => _datos.Where(h => h.Activa).ToList();
+
+        public void Insertar(Habitacion habitacion) // Metodo para insertar habitaciones nuevas
         {
-            var lista = CargarDesdeArchivo();
-
-            // Calculamos el siguiente ID basado en el máximo existente
-            habitacion.Id = lista.Count > 0 ? lista.Max(h => h.Id) + 1 : 1;
-
-            lista.Add(habitacion);
-            GuardarEnArchivo(lista);
+            habitacion.Id = _nextId++; // asignar el id de la habitacion
+            _datos.Add(habitacion);    // agregar la habitacion en nuestra lista _datos
         }
 
         public void Actualizar(Habitacion habitacion)
         {
-            var lista = CargarDesdeArchivo();
+            // Buscamos la habitacion por ID; si no existe, lanzamos excepcion tecnica
+            var ex = _datos.FirstOrDefault(h => h.Id == habitacion.Id)
+                ?? throw new Exception($"Habitacion ID {habitacion.Id} no encontrada!");
 
-            // Buscamos la habitación por ID; si no existe, lanzamos excepción técnica
-            var existente = lista.FirstOrDefault(h => h.Id == habitacion.Id)
-                ?? throw new Exception($"Habitación ID {habitacion.Id} no encontrada.");
-
-            // Actualizamos los campos modificables
-            existente.Numero = habitacion.Numero;
-            existente.Tipo = habitacion.Tipo;
-            existente.TarifaNoche = habitacion.TarifaNoche;
-
-            GuardarEnArchivo(lista);
+            // Actualizando valores de la habitacion encontrada
+            ex.Numero = habitacion.Numero;
+            ex.Tipo = habitacion.Tipo;
+            ex.TarifaNoche = habitacion.TarifaNoche;
         }
 
-        public void Eliminar(int id)
+        public void Eliminar(int id) // Con el id es suficiente para identificar la habitacion
         {
-            var lista = CargarDesdeArchivo();
+            var ex = _datos.FirstOrDefault(h => h.Id == id) // Recorremos la lista buscando el match del id
+                ?? throw new Exception($"Habitacion ID {id} no encontrada!"); // Si no aparece: lanzamos excepcion
 
-            var existente = lista.FirstOrDefault(h => h.Id == id)
-                ?? throw new Exception($"Habitación ID {id} no encontrada.");
-
-            existente.Activa = false; // Borrado lógico, igual que en el proyecto de ejemplo
-            GuardarEnArchivo(lista);
+            ex.Activa = false; // Si aparece: marcamos la habitacion como inactiva (borrado logico)
         }
 
-        public List<Habitacion> ObtenerTodasSinFiltro() => CargarDesdeArchivo();
-
-        // ── Métodos privados de persistencia ──────────────────────────────────
-        private List<Habitacion> CargarDesdeArchivo()
-        {
-            if (!File.Exists(_archivo)) return new List<Habitacion>();
-
-            var json = File.ReadAllText(_archivo);
-            return JsonSerializer.Deserialize<List<Habitacion>>(json) ?? new List<Habitacion>();
-        }
-
-        private void GuardarEnArchivo(List<Habitacion> lista)
-        {
-            var json = JsonSerializer.Serialize(lista, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(_archivo, json);
-        }
+        public List<Habitacion> ObtenerTodasSinFiltro() => _datos.ToList(); // Sin filtro de activo para validaciones internas
     }
 }

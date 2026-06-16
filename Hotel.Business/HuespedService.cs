@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
 using Hotel.Common;
 using Hotel.DataAccess;
 
@@ -5,40 +8,43 @@ namespace Hotel.Business
 {
     public class HuespedService
     {
-        private readonly HuespedRepository _repo;
+        private readonly HuespedRepository _repo; // Variable privada de solo lectura, de tipo HuespedRepository
 
-        public HuespedService() { _repo = new HuespedRepository(); }
+        public HuespedService() { _repo = new HuespedRepository(); } // Constructor
+        public List<Huesped> ObtenerTodos() => _repo.ObtenerTodos(); // Lectura
 
-        public List<Huesped> ObtenerTodos() => _repo.ObtenerTodos();
-
-        public void Guardar(Huesped huesped)
+        public void Guardar(Huesped huesped) // Insercion y Actualizacion
         {
-            // Validación 1: El nombre es obligatorio y debe tener al menos 3 caracteres
+            // Validaciones
+
+            // 1. Si el nombre esta en blanco
             if (string.IsNullOrWhiteSpace(huesped.Nombre))
-                throw new BusinessException("El nombre del huésped es requerido.", "HUES_NOMBRE_REQ");
+                throw new BusinessException("El nombre del huesped es requerido", "HUES_NOMBRE_REQ");
 
+            // 2. Si el nombre es muy corto
             if (huesped.Nombre.Length < 3)
-                throw new BusinessException("El nombre debe tener al menos 3 caracteres.", "HUES_NOMBRE_CORTO");
+                throw new BusinessException("El nombre debe tener al menos 3 caracteres", "HUES_NOMBRE_CORTO");
 
-            // Validación 2: La cédula es obligatoria
+            // 3. Si la cedula esta en blanco
             if (string.IsNullOrWhiteSpace(huesped.Cedula))
-                throw new BusinessException("La cédula del huésped es requerida.", "HUES_CEDULA_REQ");
+                throw new BusinessException("La cedula del huesped es requerida", "HUES_CEDULA_REQ");
 
-            // Validación 3: No puede existir otro huésped activo con la misma cédula
+            // 4. Si ya existe otro huesped activo con la misma cedula
             var duplicado = _repo.ObtenerTodosSinFiltro()
                 .FirstOrDefault(h => h.Cedula == huesped.Cedula && h.Activo && h.Id != huesped.Id);
 
             if (duplicado != null)
-                throw new BusinessException($"Ya existe un huésped registrado con la cédula {huesped.Cedula}.", "HUES_CEDULA_DUP");
+                throw new BusinessException($"Ya existe un huesped registrado con la cedula {huesped.Cedula}", "HUES_CEDULA_DUP");
 
-            // Validación 4: El teléfono es obligatorio
+            // 5. Si el telefono esta en blanco
             if (string.IsNullOrWhiteSpace(huesped.Telefono))
-                throw new BusinessException("El teléfono del huésped es requerido.", "HUES_TEL_REQ");
+                throw new BusinessException("El telefono del huesped es requerido", "HUES_TEL_REQ");
 
+            // Si Id == 0 es un huesped nuevo; si no, es una actualizacion
             if (huesped.Id == 0) _repo.Insertar(huesped);
             else _repo.Actualizar(huesped);
         }
 
-        public void Eliminar(int id) => _repo.Eliminar(id);
+        public void Eliminar(int id) => _repo.Eliminar(id); // Eliminacion
     }
 }

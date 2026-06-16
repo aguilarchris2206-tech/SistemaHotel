@@ -1,43 +1,39 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
 using System.ComponentModel;
 
 namespace Hotel.UI
 {
     public class PlaceholderTextBox : TextBox
     {
-        private string _placeholder = "";  //valor temporal a mostrar
-        private bool _showing = false;  // define si el texto de placeholder se muestra o no
-        // El atributo DesignerSerializationVisibility evita que el valor del placeholder se serialice en el diseñador,
-        // lo que es útil para evitar problemas al cargar el control en tiempo de diseño.
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] 
+        private string _placeholder = ""; // valor temporal a mostrar
+        private bool _showing = false;    // define si el texto de placeholder se muestra o no
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Placeholder
         {
-            get => _placeholder; // llamamos al _placeholder
+            get => _placeholder; // llamamos _placeholder
             set
             {
-                _placeholder = value; //asignamos un valor a placeholder
-                //Validamos si el campo de texto esta desenfocado y vacio para mostrar el texto temporal
-                if (!Focused && string.IsNullOrEmpty(Text)) MostrarPlaceholder();
+                _placeholder = value; // asignamos un valor a placeholder
+                if (!Focused && string.IsNullOrEmpty(Text)) MostrarPlaceholder(); // validamos si el campo esta desenfocado y vacio para mostrar el texto temporal
             }
         }
 
-        protected override void OnGotFocus(EventArgs e) //cuando este componente sea el enfoque principal de la interaccion del usuario
+        protected override void OnGotFocus(EventArgs e) // cuando este componente sea el enfoque principal de la interaccion del usuario
         {
-            base.OnGotFocus(e); //ahora tenemos el enfoque principal
-            // Texto a mostrar = nada, color = igual al del texto del resto del formulario 
-            //_Showing=false; no se muestra el texto.
-            if (_showing) { Text = ""; ForeColor = SystemColors.WindowText; _showing = false; } 
+            base.OnGotFocus(e); // ahora tenemos el enfoque principal - constructor
+            if (_showing) { Text = ""; ForeColor = SystemColors.WindowText; _showing = false; } // Texto a mostrar = nada, color = igual al del texto del resto del formulario
         }
 
-        protected override void OnLostFocus(EventArgs e) //en caso de que perdamos el enfoque principal
+        protected override void OnLostFocus(EventArgs e) // En caso de que perdamos el enfoque principal de las acciones del usuario
         {
-            base.OnLostFocus(e); //constructor
-            // Si el campo de texto esta vacio: mostramos el texto temporal.
-            if (string.IsNullOrEmpty(Text)) MostrarPlaceholder(); 
+            base.OnLostFocus(e); // constructor
+            if (string.IsNullOrEmpty(Text)) MostrarPlaceholder(); // Si el campo de texto esta vacio: mostramos el texto temporal
         }
 
-        // Definimos el metodo que muestra el texto temporal y damos formato.
-        private void MostrarPlaceholder() { Text = _placeholder; ForeColor = Color.Gray; _showing = true; }
-
-        public string TextoReal => _showing ? "" : Text; //validacion del contenudo de _showing
+        private void MostrarPlaceholder() { Text = _placeholder; ForeColor = Color.Gray; _showing = true; } // Definimos el metodo que muestra el texto temporal y damos formato
+        public string TextoReal => _showing ? "" : Text; // validacion del contenido de _showing
     }
 }

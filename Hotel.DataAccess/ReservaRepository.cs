@@ -1,68 +1,51 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
 using Hotel.Common;
-using System.Text.Json;
 
 namespace Hotel.DataAccess
 {
     public class ReservaRepository
     {
-        private readonly string _archivo = "reservas.json";
-
-        public List<Reserva> ObtenerTodas()
+        // Creamos una lista estatica de reservas (los datos viven en memoria mientras la app esta abierta)
+        private static readonly List<Reserva> _datos = new()
         {
-            var todas = CargarDesdeArchivo();
-            return todas.Where(r => r.Estado == "Activa").ToList();
-        }
+            new Reserva { Id = 1, HabitacionId = 1, HuespedId = 1, FechaEntrada = DateTime.Today, FechaSalida = DateTime.Today.AddDays(3), TotalCalculado = 105000, Estado = "Activa" },
+        };
 
-        public void Insertar(Reserva reserva)
+        public static int _nextId = 2; // Siguiente identificador en la lista
+
+        // CRUD
+
+        // Metodo para obtener todas las reservas activas del repositorio
+        public List<Reserva> ObtenerTodas() => _datos.Where(r => r.Estado == "Activa").ToList();
+
+        public void Insertar(Reserva reserva) // Metodo para insertar reservas nuevas
         {
-            var lista = CargarDesdeArchivo();
-            reserva.Id = lista.Count > 0 ? lista.Max(r => r.Id) + 1 : 1;
-            lista.Add(reserva);
-            GuardarEnArchivo(lista);
+            reserva.Id = _nextId++; // asignar el id de la reserva
+            _datos.Add(reserva);    // agregar la reserva en nuestra lista _datos
         }
 
         public void Actualizar(Reserva reserva)
         {
-            var lista = CargarDesdeArchivo();
+            var ex = _datos.FirstOrDefault(r => r.Id == reserva.Id)
+                ?? throw new Exception($"Reserva ID {reserva.Id} no encontrada!");
 
-            var existente = lista.FirstOrDefault(r => r.Id == reserva.Id)
-                ?? throw new Exception($"Reserva ID {reserva.Id} no encontrada.");
-
-            existente.HabitacionId = reserva.HabitacionId;
-            existente.HuespedId = reserva.HuespedId;
-            existente.FechaEntrada = reserva.FechaEntrada;
-            existente.FechaSalida = reserva.FechaSalida;
-            existente.TotalCalculado = reserva.TotalCalculado;
-
-            GuardarEnArchivo(lista);
+            ex.HabitacionId = reserva.HabitacionId;
+            ex.HuespedId = reserva.HuespedId;
+            ex.FechaEntrada = reserva.FechaEntrada;
+            ex.FechaSalida = reserva.FechaSalida;
+            ex.TotalCalculado = reserva.TotalCalculado;
         }
 
-        public void Cancelar(int id)
+        public void Cancelar(int id) // Cancelar = borrado logico por estado (no se borra fisicamente)
         {
-            var lista = CargarDesdeArchivo();
+            var ex = _datos.FirstOrDefault(r => r.Id == id)
+                ?? throw new Exception($"Reserva ID {id} no encontrada!");
 
-            var existente = lista.FirstOrDefault(r => r.Id == id)
-                ?? throw new Exception($"Reserva ID {id} no encontrada.");
-
-            existente.Estado = "Cancelada"; // No se borra físicamente
-            GuardarEnArchivo(lista);
+            ex.Estado = "Cancelada"; // Cambiamos el estado en lugar de eliminar
         }
 
-        public List<Reserva> ObtenerTodasSinFiltro() => CargarDesdeArchivo();
-
-        // ── Métodos privados de persistencia ──────────────────────────────────
-
-        private List<Reserva> CargarDesdeArchivo()
-        {
-            if (!File.Exists(_archivo)) return new List<Reserva>();
-            var json = File.ReadAllText(_archivo);
-            return JsonSerializer.Deserialize<List<Reserva>>(json) ?? new List<Reserva>();
-        }
-
-        private void GuardarEnArchivo(List<Reserva> lista)
-        {
-            var json = JsonSerializer.Serialize(lista, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(_archivo, json);
-        }
+        public List<Reserva> ObtenerTodasSinFiltro() => _datos.ToList(); // Sin filtro -- para validar disponibilidad
     }
 }

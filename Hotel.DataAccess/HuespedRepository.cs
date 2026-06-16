@@ -1,66 +1,51 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
 using Hotel.Common;
-using System.Text.Json;
 
 namespace Hotel.DataAccess
 {
     public class HuespedRepository
     {
-        private readonly string _archivo = "huespedes.json";
-
-        public List<Huesped> ObtenerTodos()
+        // Creamos una lista estatica de huespedes (los datos viven en memoria mientras la app esta abierta)
+        private static readonly List<Huesped> _datos = new()
         {
-            var todos = CargarDesdeArchivo();
-            return todos.Where(h => h.Activo).ToList();
-        }
+            new Huesped { Id = 1, Nombre = "Carlos Mora",    Cedula = "301450123", Telefono = "88001122" },
+            new Huesped { Id = 2, Nombre = "Laura Jimenez",  Cedula = "205670456", Telefono = "72334455" },
+            new Huesped { Id = 3, Nombre = "Diego Salazar",  Cedula = "109870789", Telefono = "63219988" },
+        };
 
-        public void Insertar(Huesped huesped)
+        public static int _nextId = 4; // Siguiente identificador en la lista
+
+        // CRUD
+
+        // Metodo para obtener todos los huespedes activos del repositorio
+        public List<Huesped> ObtenerTodos() => _datos.Where(h => h.Activo).ToList();
+
+        public void Insertar(Huesped huesped) // Metodo para insertar huespedes nuevos
         {
-            var lista = CargarDesdeArchivo();
-            huesped.Id = lista.Count > 0 ? lista.Max(h => h.Id) + 1 : 1;
-            lista.Add(huesped);
-            GuardarEnArchivo(lista);
+            huesped.Id = _nextId++; // asignar el id del huesped
+            _datos.Add(huesped);    // agregar el huesped en nuestra lista _datos
         }
 
         public void Actualizar(Huesped huesped)
         {
-            var lista = CargarDesdeArchivo();
+            var ex = _datos.FirstOrDefault(h => h.Id == huesped.Id)
+                ?? throw new Exception($"Huesped ID {huesped.Id} no encontrado!");
 
-            var existente = lista.FirstOrDefault(h => h.Id == huesped.Id)
-                ?? throw new Exception($"Huésped ID {huesped.Id} no encontrado.");
-
-            existente.Nombre = huesped.Nombre;
-            existente.Cedula = huesped.Cedula;
-            existente.Telefono = huesped.Telefono;
-
-            GuardarEnArchivo(lista);
+            ex.Nombre = huesped.Nombre;
+            ex.Cedula = huesped.Cedula;
+            ex.Telefono = huesped.Telefono;
         }
 
         public void Eliminar(int id)
         {
-            var lista = CargarDesdeArchivo();
+            var ex = _datos.FirstOrDefault(h => h.Id == id)
+                ?? throw new Exception($"Huesped ID {id} no encontrado!");
 
-            var existente = lista.FirstOrDefault(h => h.Id == id)
-                ?? throw new Exception($"Huésped ID {id} no encontrado.");
-
-            existente.Activo = false;
-            GuardarEnArchivo(lista);
+            ex.Activo = false; // Borrado logico
         }
 
-        public List<Huesped> ObtenerTodosSinFiltro() => CargarDesdeArchivo();
-
-        // ── Métodos privados de persistencia ──────────────────────────────────
-
-        private List<Huesped> CargarDesdeArchivo()
-        {
-            if (!File.Exists(_archivo)) return new List<Huesped>();
-            var json = File.ReadAllText(_archivo);
-            return JsonSerializer.Deserialize<List<Huesped>>(json) ?? new List<Huesped>();
-        }
-
-        private void GuardarEnArchivo(List<Huesped> lista)
-        {
-            var json = JsonSerializer.Serialize(lista, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(_archivo, json);
-        }
+        public List<Huesped> ObtenerTodosSinFiltro() => _datos.ToList(); // Sin filtro de activo para validaciones internas
     }
 }
