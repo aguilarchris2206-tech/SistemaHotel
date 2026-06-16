@@ -24,6 +24,11 @@ namespace Hotel.UI
             txtCedula.Text = h.Cedula;
             txtTelefono.Text = h.Telefono;
             txtNombre.Tag = h.Id;
+
+            // Forzamos el color real para que PlaceholderTextBox sepa que hay contenido real y no placeholder
+            txtNombre.ForeColor = SystemColors.WindowText;
+            txtCedula.ForeColor = SystemColors.WindowText;
+            txtTelefono.ForeColor = SystemColors.WindowText;
         }
 
         private void btnGuardar_Click(object sender, EventArgs e) // Definimos el comportamiento del boton guardar

@@ -25,6 +25,10 @@ namespace Hotel.UI
             dtpEntrada.Value = r.FechaEntrada;
             dtpSalida.Value = r.FechaSalida;
             txtHabitacionId.Tag = r.Id;
+
+            // Forzamos el color real para que PlaceholderTextBox sepa que hay contenido real y no placeholder
+            txtHabitacionId.ForeColor = SystemColors.WindowText;
+            txtHuespedId.ForeColor = SystemColors.WindowText;
         }
 
         private void btnGuardar_Click(object sender, EventArgs e) // Definimos el comportamiento del boton guardar
@@ -62,6 +66,16 @@ namespace Hotel.UI
         }
 
         private void ReservaInputPanel_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
         {
 
         }

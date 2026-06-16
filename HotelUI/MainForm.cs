@@ -112,7 +112,7 @@ namespace HotelUI
         {
             if (e.RowIndex < 0) return; // Si lo que damos doble clic es el encabezado del dgv retornamos
 
-            // Casteamos la fila seleccionada en dgv a tipo Reserva -- mismo patron que el proyecto del profe
+            // Casteamos la fila seleccionada en dgv a tipo Reserva
             var r = (Reserva)dgvReservas.Rows[e.RowIndex].DataBoundItem;
 
             panelReserva.CargarReserva(r); // Cargamos la informacion en los campos de texto
@@ -180,6 +180,16 @@ namespace HotelUI
                 CargarGridHuespedes();
                 lblStatus.Text = "Huesped eliminado con exito!";
             }
+        }
+
+        private void tabReservas_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dgvHuespedes_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

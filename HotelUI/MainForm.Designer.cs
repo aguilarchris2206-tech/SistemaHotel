@@ -30,17 +30,14 @@
         {
             tabControl1 = new TabControl();
             tabReservas = new TabPage();
-            panelReserva = new Hotel.UI.ReservaInputPanel();
             lblStatus = new Label();
             btnCancelarReserva = new Button();
             dgvReservas = new DataGridView();
             tabHabitaciones = new TabPage();
-            panelHabitacion = new Hotel.UI.HabitacionInputPanel();
             label1 = new Label();
             btnEliminarHabitacion = new Button();
             dgvHabitaciones = new DataGridView();
             tabHuespedes = new TabPage();
-            panelHuesped = new Hotel.UI.HuespedInputPanel();
             btnEliminarHuesped = new Button();
             dgvHuespedes = new DataGridView();
             label2 = new Label();
@@ -58,32 +55,24 @@
             tabControl1.Controls.Add(tabReservas);
             tabControl1.Controls.Add(tabHabitaciones);
             tabControl1.Controls.Add(tabHuespedes);
-            tabControl1.Location = new Point(215, 45);
+            tabControl1.Location = new Point(12, 45);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(472, 570);
+            tabControl1.Size = new Size(923, 570);
             tabControl1.TabIndex = 0;
             // 
             // tabReservas
             // 
             tabReservas.BackColor = SystemColors.ButtonHighlight;
-            tabReservas.Controls.Add(panelReserva);
             tabReservas.Controls.Add(lblStatus);
             tabReservas.Controls.Add(btnCancelarReserva);
             tabReservas.Controls.Add(dgvReservas);
             tabReservas.Location = new Point(4, 24);
             tabReservas.Name = "tabReservas";
-            tabReservas.Size = new Size(464, 542);
+            tabReservas.Size = new Size(915, 542);
             tabReservas.TabIndex = 0;
             tabReservas.Text = "Reservas";
-
-            // 
-            // panelReserva
-            // 
-            panelReserva.Location = new Point(169, 271);
-            panelReserva.Name = "panelReserva";
-            panelReserva.Size = new Size(299, 275);
-            panelReserva.TabIndex = 5;
+            tabReservas.Click += tabReservas_Click;
             // 
             // lblStatus
             // 
@@ -96,7 +85,7 @@
             // 
             // btnCancelarReserva
             // 
-            btnCancelarReserva.Location = new Point(72, 507);
+            btnCancelarReserva.Location = new Point(74, 490);
             btnCancelarReserva.Name = "btnCancelarReserva";
             btnCancelarReserva.Size = new Size(75, 23);
             btnCancelarReserva.TabIndex = 3;
@@ -109,28 +98,20 @@
             dgvReservas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvReservas.Location = new Point(-4, 0);
             dgvReservas.Name = "dgvReservas";
-            dgvReservas.Size = new Size(466, 270);
+            dgvReservas.Size = new Size(916, 270);
             dgvReservas.TabIndex = 1;
             // 
             // tabHabitaciones
             // 
-            tabHabitaciones.Controls.Add(panelHabitacion);
             tabHabitaciones.Controls.Add(label1);
             tabHabitaciones.Controls.Add(btnEliminarHabitacion);
             tabHabitaciones.Controls.Add(dgvHabitaciones);
             tabHabitaciones.Location = new Point(4, 24);
             tabHabitaciones.Name = "tabHabitaciones";
-            tabHabitaciones.Size = new Size(464, 542);
+            tabHabitaciones.Size = new Size(915, 542);
             tabHabitaciones.TabIndex = 1;
             tabHabitaciones.Text = "Habitaciones";
             tabHabitaciones.UseVisualStyleBackColor = true;
-            // 
-            // panelHabitacion
-            // 
-            panelHabitacion.Location = new Point(202, 281);
-            panelHabitacion.Name = "panelHabitacion";
-            panelHabitacion.Size = new Size(259, 250);
-            panelHabitacion.TabIndex = 6;
             // 
             // label1
             // 
@@ -156,28 +137,21 @@
             dgvHabitaciones.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvHabitaciones.Location = new Point(-4, 0);
             dgvHabitaciones.Name = "dgvHabitaciones";
-            dgvHabitaciones.Size = new Size(472, 275);
+            dgvHabitaciones.Size = new Size(923, 275);
             dgvHabitaciones.TabIndex = 0;
+            dgvHabitaciones.CellDoubleClick += dgvHabitaciones_CellDoubleClick;
             // 
             // tabHuespedes
             // 
-            tabHuespedes.Controls.Add(panelHuesped);
             tabHuespedes.Controls.Add(btnEliminarHuesped);
             tabHuespedes.Controls.Add(dgvHuespedes);
             tabHuespedes.Controls.Add(label2);
             tabHuespedes.Location = new Point(4, 24);
             tabHuespedes.Name = "tabHuespedes";
-            tabHuespedes.Size = new Size(464, 542);
+            tabHuespedes.Size = new Size(915, 542);
             tabHuespedes.TabIndex = 2;
             tabHuespedes.Text = "Huéspedes";
             tabHuespedes.UseVisualStyleBackColor = true;
-            // 
-            // panelHuesped
-            // 
-            panelHuesped.Location = new Point(181, 279);
-            panelHuesped.Name = "panelHuesped";
-            panelHuesped.Size = new Size(280, 253);
-            panelHuesped.TabIndex = 9;
             // 
             // btnEliminarHuesped
             // 
@@ -192,10 +166,12 @@
             // 
             dgvHuespedes.BackgroundColor = SystemColors.ActiveCaption;
             dgvHuespedes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvHuespedes.Location = new Point(3, 3);
+            dgvHuespedes.Location = new Point(-4, 0);
             dgvHuespedes.Name = "dgvHuespedes";
-            dgvHuespedes.Size = new Size(458, 270);
+            dgvHuespedes.Size = new Size(912, 270);
             dgvHuespedes.TabIndex = 6;
+            dgvHuespedes.CellContentClick += dgvHuespedes_CellContentClick;
+            dgvHuespedes.CellDoubleClick += dgvHuespedes_CellDoubleClick;
             // 
             // label2
             // 
@@ -247,8 +223,5 @@
         private Hotel.UI.HuespedInputPanel huespedInputPanel1;
         private DataGridView dgvHuespedes;
         private Label label2;
-        private Hotel.UI.ReservaInputPanel panelReserva;
-        private Hotel.UI.HabitacionInputPanel panelHabitacion;
-        private Hotel.UI.HuespedInputPanel panelHuesped;
     }
 }

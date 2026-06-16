@@ -24,6 +24,11 @@ namespace Hotel.UI
             txtTipo.Text = h.Tipo;
             txtTarifa.Text = h.TarifaNoche.ToString();
             txtNumero.Tag = h.Id;
+
+            // Forzamos el color real para que PlaceholderTextBox sepa que hay contenido real y no placeholder
+            txtNumero.ForeColor = SystemColors.WindowText;
+            txtTipo.ForeColor = SystemColors.WindowText;
+            txtTarifa.ForeColor = SystemColors.WindowText;
         }
 
         private void btnGuardar_Click(object sender, EventArgs e) // Definimos el comportamiento del boton guardar
