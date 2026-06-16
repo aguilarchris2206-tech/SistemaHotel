@@ -76,7 +76,7 @@
             tabReservas.Size = new Size(464, 542);
             tabReservas.TabIndex = 0;
             tabReservas.Text = "Reservas";
-            tabReservas.Click += tabReservas_Click;
+
             // 
             // panelReserva
             // 
@@ -171,7 +171,6 @@
             tabHuespedes.TabIndex = 2;
             tabHuespedes.Text = "Huéspedes";
             tabHuespedes.UseVisualStyleBackColor = true;
-            tabHuespedes.Click += tabHuespedes_Click;
             // 
             // panelHuesped
             // 
@@ -215,7 +214,8 @@
             ClientSize = new Size(947, 716);
             Controls.Add(tabControl1);
             Name = "MainForm";
-            Text = "Form1";
+            Text = "MainForm";
+            Load += MainForm_Load;
             tabControl1.ResumeLayout(false);
             tabReservas.ResumeLayout(false);
             tabReservas.PerformLayout();
